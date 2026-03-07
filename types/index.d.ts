@@ -4,12 +4,13 @@ import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { LucideIcon } from 'lucide-react';
 import z from 'zod';
 import { UploadSchema } from '@/lib/zod';
+import type { PlanType } from '@/lib/subscription-constants';
 
 // ============================================
 // DATABASE MODELS
 // ============================================
 
-interface IBook extends Document {
+export interface IBook extends Document {
     _id: string;
     clerkId: string;
     title: string;
@@ -26,7 +27,7 @@ interface IBook extends Document {
     updatedAt: Date;
 }
 
-interface IBookSegment extends Document {
+export interface IBookSegment extends Document {
     clerkId: string;
     bookId: Types.ObjectId;
     content: string;
@@ -37,7 +38,7 @@ interface IBookSegment extends Document {
     updatedAt: Date;
 }
 
-interface IVoiceSession extends Document {
+export interface IVoiceSession extends Document {
     _id: string;
     clerkId: string;
     bookId: Types.ObjectId;
@@ -53,9 +54,9 @@ interface IVoiceSession extends Document {
 // FORM & INPUT TYPES
 // ============================================
 
-type BookUploadFormValues = z.infer<typeof UploadSchema>;
+export type BookUploadFormValues = z.infer<typeof UploadSchema>;
 
-interface CreateBook {
+export interface CreateBook {
     clerkId: string;
     title: string;
     author: string;
@@ -67,38 +68,50 @@ interface CreateBook {
     fileSize: number;
 }
 
-interface TextSegment {
+export type CreateBookResult =
+    | {
+            success: true;
+            data: IBook;
+            alreadyExists?: boolean;
+      }
+    | {
+            success: false;
+            error: unknown;
+            isBillingError?: boolean;
+      };
+
+export interface TextSegment {
     text: string;
     segmentIndex: number;
     pageNumber?: number;
     wordCount: number;
 }
 
-interface BookCardProps {
+export interface BookCardProps {
     title: string;
     author: string;
     coverURL: string;
     slug: string;
 }
 
-interface Messages {
+export interface Messages {
     role: string;
     content: string;
 }
 
-interface ShadowBoxProps {
+export interface ShadowBoxProps {
     children: ReactNode;
     className?: string;
 }
 
-interface VoiceSelectorProps {
+export interface VoiceSelectorProps {
     disabled?: boolean;
     className?: string;
     value?: string;
     onChange: (voiceId: string) => void;
 }
 
-interface InputFieldProps<T extends FieldValues> {
+export interface InputFieldProps<T extends FieldValues> {
     control: Control<T>;
     name: FieldPath<T>;
     label: string;
@@ -106,7 +119,7 @@ interface InputFieldProps<T extends FieldValues> {
     disabled?: boolean;
 }
 
-interface FileUploadFieldProps<T extends FieldValues> {
+export interface FileUploadFieldProps<T extends FieldValues> {
     control: Control<T>;
     name: FieldPath<T>;
     label: string;
@@ -116,9 +129,8 @@ interface FileUploadFieldProps<T extends FieldValues> {
     placeholder: string;
     hint: string;
 }
-import {PLANS, PlanType} from "@/lib/subscription-constants";
 
-interface SessionCheckResult {
+export interface SessionCheckResult {
     allowed: boolean;
     currentCount: number;
     limit: number;
@@ -127,7 +139,7 @@ interface SessionCheckResult {
     error?: string;
 }
 
-interface StartSessionResult {
+export interface StartSessionResult {
     success: boolean;
     sessionId?: string;
     maxDurationMinutes?: number;
@@ -135,7 +147,7 @@ interface StartSessionResult {
     isBillingError?: boolean;
 }
 
-interface EndSessionResult {
+export interface EndSessionResult {
     success: boolean;
     error?: string;
 }
