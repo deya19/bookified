@@ -5,7 +5,6 @@ import { ArrowLeft } from "lucide-react";
 
 import { getBookBySlug } from "@/lib/actions/book.actions";
 import VapiControls from "@/components/VapiControls";
-// import VapiControls from "@/components/VapiControls";
 
 export default async function BookDetailsPage({
   params,
@@ -15,11 +14,12 @@ export default async function BookDetailsPage({
   const { userId } = await auth();
   console.log(userId);
 
+  const { slug } = await params;
+
   if (!userId) {
-    redirect("/sign-in");
+    redirect(`/sign-in?redirect_url=${encodeURIComponent(`/books/${slug}`)}`);
   }
 
-  const { slug } = await params;
   const result = await getBookBySlug(slug);
 
   if (!result.success || !result.data) {
@@ -34,7 +34,7 @@ export default async function BookDetailsPage({
         <ArrowLeft className="size-6 text-[#212a3b]" />
       </Link>
 
-      {/* <VapiControls book={book} /> */}
+      <VapiControls book={book} />
     </div>
   );
 }

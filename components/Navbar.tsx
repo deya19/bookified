@@ -21,6 +21,8 @@ const navItems = [
 export default function Navbar() {
   const pathName = usePathname();
   const { user } = useUser();
+  
+  const isAuthPage = pathName.startsWith('/sign-in') || pathName.startsWith('/sign-up');
 
   return (
     <header className="w-full fixed z-50 bg-(--bg-primary)">
@@ -51,7 +53,7 @@ export default function Navbar() {
 
           <div className="flex gap-7.5 items-center">
             <SignedOut>
-              <SignInButton mode="modal" />
+              {!isAuthPage && <SignInButton mode="modal" />}
             </SignedOut>
             <SignedIn>
               <div className="nav-user-link">

@@ -89,6 +89,7 @@ export function useVapi(book: IBook) {
                                     maxDurationRef.current / SECONDS_PER_MINUTE,
                                 )} minutes) reached. Upgrade your plan for longer sessions.`,
                             );
+                            setIsBillingError(true);
                         }
                     }
                 }, TIMER_INTERVAL_MS);
