@@ -14,11 +14,12 @@ export default async function BookDetailsPage({
   const { userId } = await auth();
   console.log(userId);
 
+  const { slug } = await params;
+
   if (!userId) {
-    redirect("/sign-in");
+    redirect(`/sign-in?redirect_url=${encodeURIComponent(`/books/${slug}`)}`);
   }
 
-  const { slug } = await params;
   const result = await getBookBySlug(slug);
 
   if (!result.success || !result.data) {
