@@ -7,7 +7,7 @@ import Book from "@/database/models/book.model";
 import { serializeData } from "@/lib/utils";
 import BookSegment from "@/database/models/book-segment.model";
 import mongoose from "mongoose";
-
+import { PLAN_LIMITS } from "@/lib/subscription-constants";
 
 export const getAllBooks = async (search?: string) => {
     try {
@@ -80,8 +80,26 @@ export const createBook = async (data: CreateBook): Promise<CreateBookResult> =>
         alreadyExists: true,
       };
 
-      //TODO: Check subscription limits before creating a book
+      const { getUserPlan } = await import("@/lib/subscription.server");
+      const { auth } = await import("@clerk/nextjs/server");
+      
+      const { userId } = await auth();
+      if (!userId) {
+        return { success: false, error: 'Unauthorized. Please sign in.' };
+      }
 
+      const plan = await getUserPlan();
+      const limits = PLAN_LIMITS[plan];
+
+      const userBookCount = await Book.countDocuments({ clerkId: data.clerkId });
+
+      if (userBookCount >= limits.maxBooks) {
+        return {
+          success: false,
+          error: `You have reached the book upload limit for your ${plan} plan (${limits.maxBooks} book${limits.maxBooks > 1 ? 's' : ''}). Please upgrade to upload more books.`,
+          isBillingError: true,
+        };
+      }
 
       const book = await Book.create({
         ...data,

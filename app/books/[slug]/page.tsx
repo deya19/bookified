@@ -5,7 +5,6 @@ import { ArrowLeft } from "lucide-react";
 
 import { getBookBySlug } from "@/lib/actions/book.actions";
 import VapiControls from "@/components/VapiControls";
-// import VapiControls from "@/components/VapiControls";
 
 export default async function BookDetailsPage({
   params,
@@ -34,7 +33,7 @@ export default async function BookDetailsPage({
         <ArrowLeft className="size-6 text-[#212a3b]" />
       </Link>
 
-      {/* <VapiControls book={book} /> */}
+      <VapiControls book={book} />
     </div>
   );
 }
